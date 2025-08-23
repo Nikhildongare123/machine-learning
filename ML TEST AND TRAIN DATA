@@ -1,0 +1,69 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score,classification_report
+
+
+df  = pd.read_csv('/content/test.csv')
+df1 = pd.read_csv('/content/train.csv')
+
+df
+
+# traing data
+df1
+# create x and y
+x = df1[df1.columns[:-1]]
+y = df1['price_range']
+
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.2,random_state=42)
+
+
+knn_model = KNeighborsClassifier()
+nb_model = GaussianNB()
+svm_model = SVC()
+lr_model = LogisticRegression()
+
+knn_model.fit(x_train,y_train)
+nb_model.fit(x_train,y_train)
+svm_model.fit(x_train,y_train)
+lr_model.fit(x_train,y_train)
+
+_pred_knn = knn_model.predict(x_test)
+y_pred_nb = nb_model.predict(x_test)
+y_pred_svm = svm_model.predict(x_test)
+y_pred_lr = lr_model.predict(x_test)
+
+print(classification_report(y_test,y_pred_knn))
+
+
+print(classification_report(y_test,y_pred_nb))
+
+
+print(classification_report(y_test,y_pred_lr))
+
+
+print(classification_report(y_test,y_pred_svm))
+
+
+df.drop(columns= 'id',inplace=True)
+
+
+df
+
+final_pred = knn_model.predict(df)
+
+#array
+final_pred
+
+df["pridicated_price"] = final_pred
+df
+
+df.to_csv('final_pred_price.csv')
+
+
+
+
